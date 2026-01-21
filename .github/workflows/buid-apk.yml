@@ -15,6 +15,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      
+    - name: Shorten workspace path
+      run: | 
+        mkdir -p ~/Build
+        mv "${{ github.workspace }}" ~/build/project
+        cd ~/build/project
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -23,9 +29,11 @@ jobs:
         distribution: 'temurin'
 
     - name: Grant execute permission for gradlew
+      working-directory: ~/build/project
       run: chmod +x gradlew
 
     - name: Build debug APK
+      working-directory: ~/build/project
       run: ./gradlew assembleDebug --stacktrace
 
     - name: Upload APK artifact
